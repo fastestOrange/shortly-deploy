@@ -3,6 +3,16 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        // define a string to put between each file in the concatenated output
+        separator: ';'
+      },
+      dist: {
+        // the files to concatenate
+        src: ['app/**/*.js', 'public/client/*.js'],
+        // the location of the resulting JS file
+        dest: 'dist/<%= pkg.name %>.js'
+      }
     },
 
     mochaTest: {
@@ -21,11 +31,20 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+    // the banner is inserted at the top of the output
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
     },
 
     jshint: {
       files: [
-        // Add filespec list here
+        'Gruntfile.js', '*.js', 'app/**/*.js', 'test/**/*.js'
       ],
       options: {
         force: 'true',
@@ -38,6 +57,12 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      minify: {
+        // expand: true,
+        // cwd: 'release/css/',
+        src: ['public/*.css'],
+        dest: 'dist/styles.min.css'
+      }
     },
 
     watch: {
@@ -94,6 +119,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'jshint', 'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
