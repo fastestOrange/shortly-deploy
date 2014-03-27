@@ -7,12 +7,13 @@ module.exports = function(grunt) {
         // define a string to put between each file in the concatenated output
         separator: ';'
       },
-      dist: {
+      app: {
         // the files to concatenate
-        src: ['app/**/*.js', 'public/client/*.js'],
+        src: ['public/client/*.js'],
         // the location of the resulting JS file
-        dest: 'dist/<%= pkg.name %>.js'
+        dest: 'public/client/dist/<%= pkg.name %>.js'
       }
+
     },
 
     mochaTest: {
@@ -37,7 +38,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+          'public/client/dist/<%= pkg.name %>.min.js': ['<%= concat.app.dest %>']
         }
       }
     },
@@ -47,7 +48,6 @@ module.exports = function(grunt) {
         'Gruntfile.js', '*.js', 'app/**/*.js', 'test/**/*.js'
       ],
       options: {
-        force: 'true',
         jshintrc: '.jshintrc',
         ignores: [
           'public/lib/**/*.js',
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         // expand: true,
         // cwd: 'release/css/',
         src: ['public/*.css'],
-        dest: 'dist/styles.min.css'
+        dest: 'public/client/dist/styles.min.css'
       }
     },
 
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'jshint', 'concat', 'uglify'
+    'cssmin', 'jshint', 'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -131,7 +131,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('deploy', [
-    // add your deploy tasks here
+    'test', 'build', 'upload'
   ]);
 
 
