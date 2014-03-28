@@ -31,3 +31,4 @@ node_modules
 dist
 azure.err
 iisnode.yml
+deploy.sh
