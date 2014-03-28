@@ -84,8 +84,12 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        command: 'git push azure master'
-
+        command: 'git push azure master',
+        options: {
+          stdout: true,
+          stderr: true,
+          failOnError: true
+        }
       }
     },
   });
@@ -121,18 +125,23 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'cssmin', 'jshint', 'concat', 'uglify'
+    'cssmin',
+    'jshint',
+    'concat',
+    'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      grunt.task.run([ 'shell' ]);
+      grunt.task.run([ 'shell:prodServer' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
   grunt.registerTask('deploy', [
-    'test', 'build', 'upload'
+    'test',
+    'build',
+    'upload'
   ]);
 };
